@@ -1,6 +1,6 @@
-module exclusive-proxy-server
+module github.com/codecorneres/exclusivebooks-proxy-server
 
-go 1.20
+go 1.17
 
 require (
 	github.com/andybalholm/brotli v1.0.5 // indirect

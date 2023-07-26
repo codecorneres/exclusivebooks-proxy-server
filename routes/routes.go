@@ -69,7 +69,7 @@ func JoinFanaticsHandler(c *fiber.Ctx) error {
 		return err
 	}
 	const (
-		soapURL    = "http://herakles.exclusivebooks.co.za/exclusive/CustomerManagement.php"
+		soapURL    = "http://staging.herakles.exclusivebooks.co.za/exclusive/CustomerManagement.php"
 		soapAction = "urn:WebsiteCustomer#JoinFanatics"
 	)
 	// Build the SOAP request payload
@@ -101,6 +101,10 @@ func JoinFanaticsHandler(c *fiber.Ctx) error {
 	}
 
 	// Create the HTTP POST request
+	fmt.Println("Soap Request Url:")
+	fmt.Println(string(soapURL))
+	fmt.Println("Soap Request Action:")
+	fmt.Println(string(soapAction))
 	fmt.Println("Requeest params:")
 	fmt.Println(string(requestBody))
 	req, err := http.NewRequest("POST", soapURL, bytes.NewBuffer(requestBody))
@@ -145,7 +149,7 @@ func MergeFanaticsCustomerHandler(c *fiber.Ctx) error {
 		return err
 	}
 	const (
-		soapURL    = "http://herakles.exclusivebooks.co.za/exclusive/CustomerManagement.php"
+		soapURL    = "http://staging.herakles.exclusivebooks.co.za/exclusive/CustomerManagement.php"
 		soapAction = "urn:WebsiteCustomer#MergeFanaticsCustomer"
 	)
 	// Build the SOAP request payload

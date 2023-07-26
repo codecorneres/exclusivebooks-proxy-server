@@ -51,6 +51,23 @@ type MergeFanaticsCustomerParts struct {
 
 // Define your route handlers here
 func JoinFanaticsHandler(c *fiber.Ctx) error {
+	postRequest := struct {
+		CustomerId    string `json:"CustomerId"`
+		Title         string `json:"Title"`
+		FirstName     string `json:"FirstName"`
+		LastName      string `json:"LastName"`
+		ContactNumber string `json:"ContactNumber"`
+		DateOfBirth   string `json:"DateOfBirth"`
+		OptIn         string `json:"OptIn"`
+		CommsPref     string `json:"CommsPref"`
+		VodacomID     string `json:"VodacomID"`
+		MemberIdNum   string `json:"MemberIdNum"`
+		EmailAddress  string `json:"EmailAddress"`
+	}{}
+
+	if err := c.BodyParser(&postRequest); err != nil {
+		return err
+	}
 	const (
 		soapURL    = "http://herakles.exclusivebooks.co.za/exclusive/CustomerManagement.php"
 		soapAction = "urn:WebsiteCustomer#JoinFanatics"
@@ -61,17 +78,17 @@ func JoinFanaticsHandler(c *fiber.Ctx) error {
 		Message:   "JoinFanaticsRequest",
 		Parts: JoinFanaticsParts{
 			NewMember: NewMember{
-				CustomerId:    "123456",
-				Title:         "Mr",
-				FirstName:     "John",
-				LastName:      "Doe",
-				ContactNumber: "1234567890",
-				DateOfBirth:   "1990-01-01",
-				OptIn:         "true",
-				CommsPref:     "email",
-				VodacomID:     "V123456",
-				MemberIdNum:   "M123456",
-				EmailAddress:  "john.doe@example.com",
+				CustomerId:    postRequest.CustomerId,
+				Title:         postRequest.Title,
+				FirstName:     postRequest.FirstName,
+				LastName:      postRequest.LastName,
+				ContactNumber: postRequest.ContactNumber,
+				DateOfBirth:   postRequest.DateOfBirth,
+				OptIn:         postRequest.OptIn,
+				CommsPref:     postRequest.CommsPref,
+				VodacomID:     postRequest.VodacomID,
+				MemberIdNum:   postRequest.MemberIdNum,
+				EmailAddress:  postRequest.EmailAddress,
 			},
 		},
 	}
@@ -119,6 +136,14 @@ func JoinFanaticsHandler(c *fiber.Ctx) error {
 }
 
 func MergeFanaticsCustomerHandler(c *fiber.Ctx) error {
+	postRequest := struct {
+		CustomerId     string `json:"CustomerId"`
+		FanaticsNumber string `json:"FanaticsNumber"`
+	}{}
+
+	if err := c.BodyParser(&postRequest); err != nil {
+		return err
+	}
 	const (
 		soapURL    = "http://herakles.exclusivebooks.co.za/exclusive/CustomerManagement.php"
 		soapAction = "urn:WebsiteCustomer#MergeFanaticsCustomer"
@@ -128,8 +153,8 @@ func MergeFanaticsCustomerHandler(c *fiber.Ctx) error {
 		Namespace: "urn:WebsiteCustomer",
 		Message:   "MergeFanaticsCustomerRequest",
 		Parts: MergeFanaticsCustomerParts{
-			CustomerId:     "123456",
-			FanaticsNumber: "313122",
+			CustomerId:     postRequest.CustomerId,
+			FanaticsNumber: postRequest.FanaticsNumber,
 		},
 	}
 

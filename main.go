@@ -12,8 +12,8 @@ func main() {
 		return c.SendString("Hello, World!")
 	})
 
-	app.Get("/fanatics-join", routes.JoinFanaticsHandler)
-	app.Get("/merge-fanatics-customer", routes.MergeFanaticsCustomerHandler)
+	app.Post("/fanatics-join", routes.JoinFanaticsHandler)
+	app.Post("/merge-fanatics-customer", routes.MergeFanaticsCustomerHandler)
 
 	app.Listen(":3000")
 

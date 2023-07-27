@@ -2,7 +2,6 @@ package routes
 
 import (
 	"bytes"
-	"encoding/xml"
 	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"io/ioutil"

@@ -49,7 +49,6 @@ type MergeFanaticsCustomerParts struct {
 	FanaticsNumber string   `xml:"FanaticsNumber"`
 }
 
-// Define your route handlers here
 func JoinFanaticsHandler(c *fiber.Ctx) error {
 	postRequest := struct {
 		CustomerId    string `json:"CustomerId"`
@@ -68,75 +67,65 @@ func JoinFanaticsHandler(c *fiber.Ctx) error {
 	if err := c.BodyParser(&postRequest); err != nil {
 		return err
 	}
-	const (
-		soapURL    = "http://staging.herakles.exclusivebooks.co.za/exclusive/CustomerManagement.php"
-		soapAction = "urn:WebsiteCustomer#JoinFanatics"
-	)
-	// Build the SOAP request payload
-	requestPayload := JoinFanaticsRequest{
-		Namespace: "urn:WebsiteCustomer",
-		Message:   "JoinFanaticsRequest",
-		Parts: JoinFanaticsParts{
-			NewMember: NewMember{
-				CustomerId:    postRequest.CustomerId,
-				Title:         postRequest.Title,
-				FirstName:     postRequest.FirstName,
-				LastName:      postRequest.LastName,
-				ContactNumber: postRequest.ContactNumber,
-				DateOfBirth:   postRequest.DateOfBirth,
-				OptIn:         postRequest.OptIn,
-				CommsPref:     postRequest.CommsPref,
-				VodacomID:     postRequest.VodacomID,
-				MemberIdNum:   postRequest.MemberIdNum,
-				EmailAddress:  postRequest.EmailAddress,
-			},
-		},
-	}
+	// URL of the SOAP endpoint
+	soapURL := "http://staging.herakles.exclusivebooks.co.za/exclusive/CustomerManagement.php"
 
-	// Convert the SOAP request to XML
-	requestBody, err := xml.MarshalIndent(requestPayload, "", "    ")
+	// SOAP Action header
+	soapAction := "urn:WebsiteCustomer#JoinFanatics"
+
+	// SOAP request body (replace with your actual SOAP envelope)
+	soapRequest := `
+			<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tns="urn:WebsiteCustomer">
+				<soap:Body>
+					<tns:JoinFanaticsRequest>
+						<NewMember>
+			                <CustomerId>` + postRequest.CustomerId + `</CustomerId>
+			                <Title>` + postRequest.Title + `</Title>
+			                <FirstName>` + postRequest.FirstName + `</FirstName>
+			                <LastName>` + postRequest.LastName + `</LastName>
+			                <ContactNumber>` + postRequest.ContactNumber + `</ContactNumber>
+			                <DateOfBirth>` + postRequest.DateOfBirth + `</DateOfBirth>
+			                <OptIn>` + postRequest.OptIn + `</OptIn>
+			                <CommsPref>` + postRequest.CommsPref + `</CommsPref>
+			                <VodacomID>` + postRequest.VodacomID + `</VodacomID>
+			                <MemberIdNum>` + postRequest.MemberIdNum + `</MemberIdNum>
+			                <EmailAddress>` + postRequest.EmailAddress + `</EmailAddress>
+			            </NewMember>
+					</tns:JoinFanaticsRequest>
+				</soap:Body>
+			</soap:Envelope>`
+
+	// Create the HTTP request
+	req, err := http.NewRequest("POST", soapURL, bytes.NewBufferString(soapRequest))
 	if err != nil {
-		fmt.Println("Error marshaling SOAP request:", err)
-		return c.SendString("Error marshaling SOAP request:")
+		fmt.Println("Error creating SOAP request:", err)
+		return c.SendString("Error creating SOAP request:")
 	}
 
-	// Create the HTTP POST request
-	fmt.Println("Soap Request Url:")
-	fmt.Println(string(soapURL))
-	fmt.Println("Soap Request Action:")
-	fmt.Println(string(soapAction))
-	fmt.Println("Requeest params:")
-	fmt.Println(string(requestBody))
-	req, err := http.NewRequest("POST", soapURL, bytes.NewBuffer(requestBody))
-	if err != nil {
-		fmt.Println("Error creating HTTP request:", err)
-		return c.SendString("Error creating HTTP request:")
-	}
+	// Set the appropriate headers
+	req.Header.Set("Content-Type", "text/xml; charset=utf-8")
+	req.Header.Set("SOAPAction", soapAction)
 
-	// Set SOAP-specific headers
-	req.Header.Add("Content-Type", "text/xml; charset=utf-8")
-	req.Header.Add("SOAPAction", soapAction)
-
-	// Send the request
+	// Make the request to the SOAP endpoint
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		fmt.Println("Error sending SOAP request:", err)
-		return c.SendString("Error sending SOAP request:")
+		fmt.Println("Error making SOAP request:", err)
+		return c.SendString("Error marshaling SOAP request:")
 	}
 	defer resp.Body.Close()
 
 	// Read the response body
-	responseBody, err := ioutil.ReadAll(resp.Body)
+	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		fmt.Println("Error reading SOAP response:", err)
 		return c.SendString("Error reading SOAP response:")
 	}
 
 	// Print the SOAP response
-	fmt.Println("Successfull SOAP response:", resp)
-	fmt.Println(string(responseBody))
-	return c.SendString(string(responseBody))
+	fmt.Println("SOAP Response:")
+	fmt.Println(string(body))
+	return c.SendString(string(body))
 }
 
 func MergeFanaticsCustomerHandler(c *fiber.Ctx) error {
@@ -148,58 +137,53 @@ func MergeFanaticsCustomerHandler(c *fiber.Ctx) error {
 	if err := c.BodyParser(&postRequest); err != nil {
 		return err
 	}
-	const (
-		soapURL    = "http://staging.herakles.exclusivebooks.co.za/exclusive/CustomerManagement.php"
-		soapAction = "urn:WebsiteCustomer#MergeFanaticsCustomer"
-	)
-	// Build the SOAP request payload
-	requestPayload := MergeFanaticsCustomerRequest{
-		Namespace: "urn:WebsiteCustomer",
-		Message:   "MergeFanaticsCustomerRequest",
-		Parts: MergeFanaticsCustomerParts{
-			CustomerId:     postRequest.CustomerId,
-			FanaticsNumber: postRequest.FanaticsNumber,
-		},
-	}
+	// URL of the SOAP endpoint
+	soapURL := "http://staging.herakles.exclusivebooks.co.za/exclusive/CustomerManagement.php"
 
-	// Convert the SOAP request to XML
-	requestBody, err := xml.MarshalIndent(requestPayload, "", "    ")
+	// SOAP Action header
+	soapAction := "urn:WebsiteCustomer#MergeFanaticsCustomer"
+
+	// SOAP request body (replace with your actual SOAP envelope)
+	soapRequest := `
+			<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tns="urn:WebsiteCustomer">
+				<soap:Body>
+					<tns:MergeFanaticsCustomerRequest>
+			                <CustomerId>` + postRequest.CustomerId + `</CustomerId>
+			                <FanaticsNumber>` + postRequest.FanaticsNumber + `</FanaticsNumber>
+					</tns:MergeFanaticsCustomerRequest>
+				</soap:Body>
+			</soap:Envelope>`
+
+	// Create the HTTP request
+	req, err := http.NewRequest("POST", soapURL, bytes.NewBufferString(soapRequest))
 	if err != nil {
-		fmt.Println("Error marshaling SOAP request:", err)
-		return c.SendString("Error marshaling SOAP request:")
+		fmt.Println("Error creating SOAP request:", err)
+		return c.SendString("Error creating SOAP request:")
 	}
 
-	// Create the HTTP POST request
-	fmt.Println("Requeest params:")
-	fmt.Println(string(requestBody))
-	req, err := http.NewRequest("POST", soapURL, bytes.NewBuffer(requestBody))
-	if err != nil {
-		fmt.Println("Error creating HTTP request:", err)
-		return c.SendString("Error creating HTTP request:")
-	}
+	// Set the appropriate headers
+	req.Header.Set("Content-Type", "text/xml; charset=utf-8")
+	req.Header.Set("SOAPAction", soapAction)
 
-	// Set SOAP-specific headers
-	req.Header.Add("Content-Type", "text/xml; charset=utf-8")
-	req.Header.Add("SOAPAction", soapAction)
-
-	// Send the request
+	// Make the request to the SOAP endpoint
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		fmt.Println("Error sending SOAP request:", err)
-		return c.SendString("Error sending SOAP request:")
+		fmt.Println("Error making SOAP request:", err)
+		return c.SendString("Error marshaling SOAP request:")
 	}
 	defer resp.Body.Close()
 
 	// Read the response body
-	responseBody, err := ioutil.ReadAll(resp.Body)
+	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		fmt.Println("Error reading SOAP response:", err)
 		return c.SendString("Error reading SOAP response:")
 	}
 
 	// Print the SOAP response
-	fmt.Println("Successfull SOAP response:", resp)
-	fmt.Println(string(responseBody))
-	return c.SendString(string(responseBody))
+	fmt.Println("SOAP Response:")
+	fmt.Println(string(body))
+	return c.SendString(string(body))
+
 }

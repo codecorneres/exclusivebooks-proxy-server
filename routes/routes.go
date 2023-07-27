@@ -9,46 +9,6 @@ import (
 	"net/http"
 )
 
-type NewMember struct {
-	XMLName       xml.Name `xml:"NewMember"`
-	CustomerId    string   `xml:"CustomerId"`
-	Title         string   `xml:"Title"`
-	FirstName     string   `xml:"FirstName"`
-	LastName      string   `xml:"LastName"`
-	ContactNumber string   `xml:"ContactNumber"`
-	DateOfBirth   string   `xml:"DateOfBirth"`
-	OptIn         string   `xml:"OptIn"`
-	CommsPref     string   `xml:"CommsPref"`
-	VodacomID     string   `xml:"vodacomID"`
-	MemberIdNum   string   `xml:"MemberIdNum"`
-	EmailAddress  string   `xml:"EmailAddress"`
-}
-
-type JoinFanaticsRequest struct {
-	XMLName   xml.Name `xml:"JoinFanaticsRequest"`
-	Namespace string   `xml:"xmlns:tns,attr"`
-	Message   string   `xml:"xmlns:soap,attr"`
-	Parts     JoinFanaticsParts
-}
-
-type JoinFanaticsParts struct {
-	XMLName   xml.Name `xml:"parts"`
-	NewMember NewMember
-}
-
-type MergeFanaticsCustomerRequest struct {
-	XMLName   xml.Name `xml:"MergeFanaticsCustomer"`
-	Namespace string   `xml:"xmlns:tns,attr"`
-	Message   string   `xml:"xmlns:soap,attr"`
-	Parts     MergeFanaticsCustomerParts
-}
-
-type MergeFanaticsCustomerParts struct {
-	XMLName        xml.Name `xml:"parts"`
-	CustomerId     string   `xml:"CustomerId"`
-	FanaticsNumber string   `xml:"FanaticsNumber"`
-}
-
 func JoinFanaticsHandler(c *fiber.Ctx) error {
 	postRequest := struct {
 		CustomerId    string `json:"CustomerId"`
